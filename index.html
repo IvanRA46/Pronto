@@ -28,7 +28,7 @@
             height: 100%;
             width: 0;
             background-color: #000;
-            transition: width 2s ease-in-out;
+            transition: width 8s ease-in-out;
         }
         .loading {
             font-size: 24px;
@@ -49,10 +49,15 @@
             content: '';
             animation: dotsAnimation 1.5s infinite steps(1);
         }
-        .message {
+        .messages {
             margin-top: 10px;
             font-size: 16px;
             color: #555;
+            text-align: center;
+        }
+        .message {
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
         }
     </style>
 </head>
@@ -61,13 +66,42 @@
         <div class="loading-bar"></div>
     </div>
     <div class="loading">Cargando<span class="dots"></span></div>
-    <div class="message">Por favor, espera un momento.</div>
+    <div class="messages" id="messagesContainer"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            let loadingBar = document.querySelector(".loading-bar");
+            let messagesContainer = document.getElementById("messagesContainer");
+            let messages = ["Cargando recursos...", "Iniciando módulos...", "Conectando al servidor...", "No sé lo que hago", "Carga completa."];
+            
             setTimeout(() => {
-                document.querySelector(".loading-bar").style.width = "100%";
-            }, 500);
+                loadingBar.style.width = "100%";
+            }, 1500);
+
+            let index = 0;
+            function showNextMessage() {
+                if (index < messages.length) {
+                    let messageElement = document.createElement("div");
+                    messageElement.className = "message";
+                    messageElement.textContent = messages[index];
+                    messagesContainer.appendChild(messageElement);
+                    
+                    setTimeout(() => {
+                        messageElement.style.opacity = 1;
+                    }, 200);
+                    
+                    setTimeout(() => {
+                        messageElement.style.opacity = 0;
+                        setTimeout(() => {
+                            messagesContainer.removeChild(messageElement);
+                        }, 1500);
+                    }, 3000);
+                    
+                    index++;
+                    setTimeout(showNextMessage, 2000);
+                }
+            }
+            showNextMessage();
         });
     </script>
 </body>
